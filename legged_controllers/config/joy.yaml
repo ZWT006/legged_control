@@ -7,10 +7,24 @@ teleop:
     axis_mappings:
       - axis: 0
         target: angular.z
-        scale: 3.1415
+        scale: 1.57079605
       - axis: 1
         target: linear.x
-        scale: 1.0
+        scale: 0.5
       - axis: 3
         target: linear.y
-        scale: 0.8
+        scale: 0.3
+
+# M_PI = 3.1415926
+# M_PI/2 = 1.57079605
+# M_PI/4 = 0.78539815
+# default parameters
+# - axis: 0
+#   target: angular.z
+#   scale: 3.1415
+# - axis: 1
+#   target: linear.x
+#   scale: 1.0
+# - axis: 3
+#   target: linear.y
+#   scale: 0.8
