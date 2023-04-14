@@ -24,6 +24,12 @@
 #include <legged_wbc/WeightedWbc.h>
 #include <pluginlib/class_list_macros.hpp>
 
+#include "legged_hw/LeggedHWState.h"
+
+//Tag: zwt add lostateMsge_pub to publih lostate msgs
+ros::Publisher lowstateMsge_pub;
+legged_hw::LeggedHWState lowstatemsg;
+// uint32_t timescale = 0;
 namespace legged {
 bool LeggedController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHandle& controller_nh) {
   // Initialize OCS2
@@ -41,6 +47,25 @@ bool LeggedController::init(hardware_interface::RobotHW* robot_hw, ros::NodeHand
   setupMrt();
   // Visualization
   ros::NodeHandle nh;
+
+  //################################################################################
+  lowstateMsge_pub = nh.advertise<legged_hw::LeggedHWState>("lowstatemsgs", 1);
+  lowstatemsg.header.frame_id = "leggedHW";
+  lowstatemsg.jointState.name.push_back("LF_HAA");
+  lowstatemsg.jointState.name.push_back("LF_HFE");
+  lowstatemsg.jointState.name.push_back("LF_KFE");
+  lowstatemsg.jointState.name.push_back("LH_HAA");
+  lowstatemsg.jointState.name.push_back("LH_HFE");
+  lowstatemsg.jointState.name.push_back("LH_KFE");
+  lowstatemsg.jointState.name.push_back("RF_HAA");
+  lowstatemsg.jointState.name.push_back("RF_HFE");
+  lowstatemsg.jointState.name.push_back("RF_KFE");
+  lowstatemsg.jointState.name.push_back("RH_HAA");
+  lowstatemsg.jointState.name.push_back("RH_HFE");
+  lowstatemsg.jointState.name.push_back("RH_KFE");
+  //################################################################################
+
+
   CentroidalModelPinocchioMapping pinocchioMapping(leggedInterface_->getCentroidalModelInfo());
   eeKinematicsPtr_ = std::make_shared<PinocchioEndEffectorKinematics>(leggedInterface_->getPinocchioInterface(), pinocchioMapping,
                                                                       leggedInterface_->modelSettings().contactNames3DoF);
@@ -151,12 +176,28 @@ void LeggedController::updateStateEstimation(const ros::Time& time, const ros::D
   vector3_t angularVel, linearAccel;
   matrix3_t orientationCovariance, angularVelCovariance, linearAccelCovariance;
 
+  //###############################################################################
+  vector_t jointTau(hybridJointHandles_.size());
+  lowstatemsg.header.stamp = ros::Time::now();
+  // timescale++;
+  //###############################################################################
+
   for (size_t i = 0; i < hybridJointHandles_.size(); ++i) {
     jointPos(i) = hybridJointHandles_[i].getPosition();
     jointVel(i) = hybridJointHandles_[i].getVelocity();
+    jointTau(i) = hybridJointHandles_[i].getEffort();
+    // zwt ###################################################
+    lowstatemsg.jointState.position.push_back(jointPos(i));
+    lowstatemsg.jointState.velocity.push_back(jointVel(i));
+    lowstatemsg.jointState.effort.push_back(jointTau(i));
+    // zwt ###################################################
   }
+
   for (size_t i = 0; i < contacts.size(); ++i) {
     contactFlag[i] = contactHandles_[i].isContact();
+    // zwt ###################################################
+    lowstatemsg.contact.push_back(contactFlag[i]);
+    // zwt ###################################################
   }
   for (size_t i = 0; i < 4; ++i) {
     quat.coeffs()(i) = imuSensorHandle_.getOrientation()[i];
@@ -169,7 +210,36 @@ void LeggedController::updateStateEstimation(const ros::Time& time, const ros::D
     orientationCovariance(i) = imuSensorHandle_.getOrientationCovariance()[i];
     angularVelCovariance(i) = imuSensorHandle_.getAngularVelocityCovariance()[i];
     linearAccelCovariance(i) = imuSensorHandle_.getLinearAccelerationCovariance()[i];
+    // zwt ###################################################
+    lowstatemsg.imu.orientation_covariance[i] = orientationCovariance(i);
+    lowstatemsg.imu.angular_velocity_covariance[i] = angularVelCovariance(i);
+    lowstatemsg.imu.linear_acceleration_covariance[i] = linearAccelCovariance(i);
+    // zwt ###################################################
   }
+
+  // zwt ###################################################
+  lowstatemsg.imu.orientation.x = quat.x();
+  lowstatemsg.imu.orientation.y = quat.y();
+  lowstatemsg.imu.orientation.z = quat.z();
+  lowstatemsg.imu.orientation.w = quat.w();
+  lowstatemsg.imu.angular_velocity.x = angularVel(0);
+  lowstatemsg.imu.angular_velocity.y = angularVel(1);
+  lowstatemsg.imu.angular_velocity.z = angularVel(2);
+  lowstatemsg.imu.linear_acceleration.x = linearAccel(0);
+  lowstatemsg.imu.linear_acceleration.y = linearAccel(1);
+  lowstatemsg.imu.linear_acceleration.z = linearAccel(2);
+  lowstateMsge_pub.publish(lowstatemsg);
+  lowstatemsg.jointState.position.clear();
+  lowstatemsg.jointState.velocity.clear();
+  lowstatemsg.jointState.effort.clear();
+  lowstatemsg.contact.clear();
+  // if (timescale == 100)
+  // {
+  //   timescale = 0;
+  //   ROS_INFO("\033[32m lowstateMsge_pub \033[0m");
+  // }
+  // zwt ###################################################
+
 
   stateEstimate_->updateJointStates(jointPos, jointVel);
   stateEstimate_->updateContact(contactFlag);

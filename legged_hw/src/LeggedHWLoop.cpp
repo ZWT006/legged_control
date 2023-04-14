@@ -3,7 +3,10 @@
 // Created by qiayuan on 1/24/22.
 //
 #include "legged_hw/LeggedHWLoop.h"
+// #include "legged_hw/LeggedHWState.h"
 
+//Tag: zwt add lowstateMsge_pub to publih lostate msgs
+// ros::Publisher lowstateMsge_pub;
 namespace legged {
 LeggedHWLoop::LeggedHWLoop(ros::NodeHandle& nh, std::shared_ptr<LeggedHW> hardware_interface)
     : nh_(nh), hardwareInterface_(std::move(hardware_interface)), loopRunning_(true) {
@@ -14,6 +17,12 @@ LeggedHWLoop::LeggedHWLoop(ros::NodeHandle& nh, std::shared_ptr<LeggedHW> hardwa
   int error = 0;
   int threadPriority = 0;
   ros::NodeHandle nhP("~");
+
+  //################################################################################
+
+  // lowstateMsge_pub = nhP.advertise<legged_hw::LeggedHWState>("lowstatemsgs", 1);
+
+  //################################################################################
   error += static_cast<int>(!nhP.getParam("loop_frequency", loopHz_));
   error += static_cast<int>(!nhP.getParam("cycle_time_error_threshold", cycleTimeErrorThreshold_));
   error += static_cast<int>(!nhP.getParam("thread_priority", threadPriority));
@@ -40,7 +49,7 @@ LeggedHWLoop::LeggedHWLoop(ros::NodeHandle& nh, std::shared_ptr<LeggedHW> hardwa
         "are not set properly.).\n");
   }
 }
-
+//Tag: zwt 2023-4 这里的update看起来每次都会
 void LeggedHWLoop::update() {
   const auto currentTime = Clock::now();
   // Compute desired duration rounded to clock decimation
@@ -62,7 +71,14 @@ void LeggedHWLoop::update() {
   // Input
   // get the hardware's state
   hardwareInterface_->read(ros::Time::now(), elapsedTime_);
+  //################################################################################
+  // legged_hw::LeggedHWState lowstateMsge;
+  // lowstateMsge.header.stamp = ros::Time::now();
+  // lowstateMsge.header.frame_id = "legged_hw";
 
+
+
+  //################################################################################
   // Control
   // let the controller compute the new command (via the controller manager)
   controllerManager_->update(ros::Time::now(), elapsedTime_);

@@ -32,7 +32,7 @@ bool UnitreeHW::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) {
   }
   return true;
 }
-
+// 这里才是Unitree A1相关的HW函数 根据A1的SDK接口,读取lowState_和lowCmd_的数据
 void UnitreeHW::read(const ros::Time& /*time*/, const ros::Duration& /*period*/) {
   udp_->Recv();
   udp_->GetRecv(lowState_);

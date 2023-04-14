@@ -26,7 +26,7 @@ struct UnitreeImuData {
   double linearAcc_[3];      // NOLINT(modernize-avoid-c-arrays)
   double linearAccCov_[9];   // NOLINT(modernize-avoid-c-arrays)
 };
-
+// Tag: zwt 这里,UnitreeHW 继承了LeggedHW
 class UnitreeHW : public LeggedHW {
  public:
   UnitreeHW() = default;

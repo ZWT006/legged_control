@@ -34,7 +34,7 @@
 //
 // Created by qiayuan on 12/27/20.
 //
-
+/*关于Unitree 的HW 的具体实现,这里调用了 legged_hw中的一些函数来实现的*/
 #include <legged_hw/LeggedHWLoop.h>
 #include "legged_unitree_hw/UnitreeHW.h"
 
@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
     // 2. initialize the hardware and interface it with ros_control
     unitreeHw->init(nh, robotHwNh);
 
-    // Start the control loop
+    // Start the control loop //Tag: zwt 这里将自己创建的std::shared_ptr<LeggedHW> hardware_interface传入了LeggedHWLoop中
     legged::LeggedHWLoop controlLoop(nh, unitreeHw);
 
     // Wait until shutdown signal received

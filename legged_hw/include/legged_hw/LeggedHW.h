@@ -19,7 +19,10 @@
 #include <hardware_interface/robot_hw.h>
 #include <legged_common/hardware_interface/ContactSensorInterface.h>
 #include <legged_common/hardware_interface/HybridJointInterface.h>
-
+/*Tag: zwt 这里的LeggedHW 继承了RobotHW，RobotHW是ros_control的基类，里面定义了一些接口，比如init，read，write等
+* 标准的hardware_interface::JointStateInterface 中有相关的函数可以进行相关操作
+* HybridJointInterface是自定义的接口，用于控制机器人的关节,继承了JointStateInterface？
+*/
 namespace legged {
 class LeggedHW : public hardware_interface::RobotHW {
  public:

@@ -15,4 +15,11 @@
     <depend>legged_common</depend>
     <depend>controller_manager</depend>
     <depend>urdf</depend>
+
+    <depend>std_msgs</depend>
+    <depend>sensor_msgs</depend>
+    <depend>geometry_msgs</depend>
+    <depend>message_runtime</depend>
+    <depend>message_generation</depend>  <!-- zwt add-->
+
 </package>

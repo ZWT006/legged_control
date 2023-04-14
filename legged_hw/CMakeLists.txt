@@ -9,7 +9,23 @@ find_package(catkin REQUIRED
         legged_common
         controller_manager
         urdf
+        std_msgs
+        sensor_msgs
+        geometry_msgs
+        message_generation # zwt add
         )
+
+add_message_files(
+        FILES
+        LeggedHWState.msg
+)# zwt add
+
+generate_messages(
+        DEPENDENCIES
+        std_msgs
+        sensor_msgs
+        geometry_msgs
+)# zwt add
 
 catkin_package(
         INCLUDE_DIRS
@@ -21,6 +37,10 @@ catkin_package(
         legged_common
         controller_manager
         urdf
+        std_msgs
+        sensor_msgs
+        geometry_msgs
+        message_runtime # zwt add
 )
 
 ###########
