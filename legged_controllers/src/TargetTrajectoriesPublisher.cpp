@@ -63,7 +63,7 @@ TargetTrajectories goalToTargetTrajectories(const vector_t& goal, const SystemOb
   const scalar_t targetReachingTime = observation.time + estimateTimeToTarget(targetPose - currentPose);
   return targetPoseToTargetTrajectories(targetPose, observation, targetReachingTime);
 }
-
+//Tag: zwt cmdvel to target calculation base on current observation
 TargetTrajectories cmdVelToTargetTrajectories(const vector_t& cmdVel, const SystemObservation& observation) {
   const vector_t currentPose = observation.state.segment<6>(6);
   const Eigen::Matrix<scalar_t, 3, 1> zyx = currentPose.tail(3);

@@ -74,6 +74,8 @@ class TargetTrajectoriesPublisher final {
       cmdVel[2] = msg->linear.z;
       cmdVel[3] = msg->angular.z;
 
+      //Tag: zwt subscribe cmd_vel from joystick,and calculate the target trajectory
+      // but the target trajectory is not good, 
       const auto trajectories = cmdVelToTargetTrajectories_(cmdVel, latestObservation_);
       targetTrajectoriesPublisher_->publishTargetTrajectories(trajectories);
     };
