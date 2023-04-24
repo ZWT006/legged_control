@@ -6,6 +6,7 @@
 
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
+#include <nav_msgs/Path.h>
 #include <ros/subscriber.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/transform_listener.h>
@@ -22,9 +23,10 @@ class TargetTrajectoriesPublisher final {
   using CmdToTargetTrajectories = std::function<TargetTrajectories(const vector_t& cmd, const SystemObservation& observation)>;
 
   TargetTrajectoriesPublisher(::ros::NodeHandle& nh, const std::string& topicPrefix, CmdToTargetTrajectories goalToTargetTrajectories,
-                              CmdToTargetTrajectories cmdVelToTargetTrajectories)
+                              CmdToTargetTrajectories cmdVelToTargetTrajectories,CmdToTargetTrajectories navSeqToTargetTrajectories)
       : goalToTargetTrajectories_(std::move(goalToTargetTrajectories)),
         cmdVelToTargetTrajectories_(std::move(cmdVelToTargetTrajectories)),
+        navSeqToTargetTrajectories_(std::move(navSeqToTargetTrajectories)),
         tf2_(buffer_) {
     // Trajectories publisher
     targetTrajectoriesPublisher_.reset(new TargetTrajectoriesRosPublisher(nh, topicPrefix));
@@ -77,9 +79,33 @@ class TargetTrajectoriesPublisher final {
       const auto trajectories = cmdVelToTargetTrajectories_(cmdVel, latestObservation_);
       targetTrajectoriesPublisher_->publishTargetTrajectories(trajectories);
     };
-
+// zwt #############################################################################################
+    // nav_seq subscriber
+    auto navSeqCallback = [this](const nav_msgs::Path::ConstPtr & msg) {
+      if (latestObservation_.time == 0.0) {
+        return;
+      }
+    //使用 geometry_msgs::Pose 来存储[x,y,q]和[dx,dy,dq] 并且[x,y,q]是相对于当前baselink/odometry的偏移量;速度是世界坐标系下的速度
+    // 对应的数据格式: x->pose.position.x, y->pose.position.y, q->pose.position.z
+    //              dx->pose.orientation.x, dy->pose.orientation.y, dq->pose.orientation.z
+    // geometry_msgs::PoseStamped: http://docs.ros.org/en/noetic/api/geometry_msgs/html/msg/PoseStamped.html
+    vector_t navSeq = vector_t::Zero(msg->poses.size()*6);
+    for (int idx=0;idx < msg->poses.size();idx++){
+      navSeq[idx*6+0] = msg->poses[idx].pose.position.x;
+      navSeq[idx*6+1] = msg->poses[idx].pose.position.y;
+      navSeq[idx*6+2] = msg->poses[idx].pose.position.z;
+      navSeq[idx*6+3] = msg->poses[idx].pose.orientation.x;
+      navSeq[idx*6+4] = msg->poses[idx].pose.orientation.y;
+      navSeq[idx*6+5] = msg->poses[idx].pose.orientation.z;
+    }
+    const auto trajectories = navSeqToTargetTrajectories_(navSeq, latestObservation_);
+    targetTrajectoriesPublisher_->publishTargetTrajectories(trajectories);
+    };
+// zwt #############################################################################################
     goalSub_ = nh.subscribe<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1, goalCallback);
     cmdVelSub_ = nh.subscribe<geometry_msgs::Twist>("/cmd_vel", 1, cmdVelCallback);
+    // nav_msgs::Path reference: http://docs.ros.org/en/noetic/api/nav_msgs/html/msg/Path.html
+    navseqSub_ = nh.subscribe<nav_msgs::Path>("/nav_seq", 1, navSeqCallback);
   }
 
  private:
@@ -93,6 +119,10 @@ class TargetTrajectoriesPublisher final {
 
   mutable std::mutex latestObservationMutex_;
   SystemObservation latestObservation_;
+  // zwt add : for nav_seq trajectory tracking
+  CmdToTargetTrajectories navSeqToTargetTrajectories_;
+  ::ros::Subscriber navseqSub_;
+  double _time_interval=0.1;
 };
 
 }  // namespace legged

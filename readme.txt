@@ -26,7 +26,7 @@ ps:输入步态
 roslaunch legged_controllers joy_teleop.launch
 
 4.开启运动
-rosservice call /controller_manager/switch_controller "start_controllers: ['controllers/legged_controller']                   
+rosservice call /controller_manager/switch_controller "start_controllers: ['controllers/legged_controller']
 stop_controllers: ['']
 strictness: 0
 start_asap: false
