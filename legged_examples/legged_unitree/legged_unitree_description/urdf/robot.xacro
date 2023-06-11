@@ -38,9 +38,9 @@
         </inertial>
     </link>
 
-    <xacro:Devices connected_to="base" Livox_switch="$(arg Livox_switch)" D435_switch="$(arg D435_switch)">
+    <!-- <xacro:Devices connected_to="base" Livox_switch="$(arg Livox_switch)" D435_switch="$(arg D435_switch)">
         <origin rpy="0 0 0" xyz="0 0 0"/>
-    </xacro:Devices>
+    </xacro:Devices> -->
 
     <xacro:IMU connected_to="base" imu_name="unitree_imu" xyz="0. 0. 0." rpy="0. 0. 0."/>
 

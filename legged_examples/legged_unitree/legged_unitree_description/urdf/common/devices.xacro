@@ -119,7 +119,6 @@
             </gazebo>
         </xacro:macro>
 
-
         <xacro:if value="${Livox_switch == True}">
             <xacro:Livox_Mid_gazebo_sensor name="livox" visualize="true"/>
         </xacro:if>

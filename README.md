@@ -56,6 +56,13 @@ its dependencies following the step below.
    the [document](https://leggedrobotics.github.io/ocs2/robotic_examples.html#legged-robot) and below.
    ![](https://leggedrobotics.github.io/ocs2/_images/legged_robot.gif)
 
+3. dependencies for simulation
+  ```
+  # Clone realsense_ros_gazebo for realsense-D435 simulation
+  git clone https://github.com/nilseuropa/realsense_ros_gazebo
+  # Clone livox_laser_simulation for livox-lidar simulation
+  git clone https://github.com/Livox-SDK/livox_laser_simulation
+  ```
 ### Build
 
 Build the source code of `legged_control` by:
