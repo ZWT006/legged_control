@@ -4,6 +4,11 @@ sudo apt-get install ros-noetic-teleop-twist-joy
 sudo apt-get install ros-noetic-joy-teleop
 
 #################################################################
+
+# 修改后编译
+catkin build legged_controllers legged_unitree_description
+
+
 # legged control 工作流程
 1. 启动robot
 export ROBOT_TYPE=a1

@@ -5,6 +5,12 @@
     <xacro:arg name="robot_type" default="a1"/>
     <xacro:arg name="Livox_switch" default="false"/>
     <xacro:arg name="D435_switch" default="false"/>
+    <xacro:arg name="Devices_switch" default="false"/>
+    <xacro:property name="Livox_switch_flag" value="$(arg Livox_switch)"/>
+    <xacro:property name="D435_switch_flag" value="$(arg D435_switch)"/>
+    <xacro:property name="Devices_switch_flag" value="$(arg Devices_switch)"/>
+
+
 
     <xacro:include filename="$(find legged_unitree_description)/urdf/common/materials.xacro"/>
     <xacro:include filename="$(find legged_unitree_description)/urdf/common/leg.xacro"/>
@@ -38,9 +44,12 @@
         </inertial>
     </link>
 
-    <!-- <xacro:Devices connected_to="base" Livox_switch="$(arg Livox_switch)" D435_switch="$(arg D435_switch)">
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-    </xacro:Devices> -->
+
+    <xacro:if value="${Devices_switch_flag == True}">
+        <xacro:Devices connected_to="base" Livox_switch="${Livox_switch_flag}" D435_switch="${D435_switch_flag}">
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+        </xacro:Devices>
+    </xacro:if>
 
     <xacro:IMU connected_to="base" imu_name="unitree_imu" xyz="0. 0. 0." rpy="0. 0. 0."/>
 

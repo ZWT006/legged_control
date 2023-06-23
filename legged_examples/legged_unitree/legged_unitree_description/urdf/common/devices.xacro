@@ -6,9 +6,9 @@
     <!-- parameters for livox lidar-->
     <xacro:property name="M_PI" value="3.14159"/>
     <xacro:property name="laser_min_range" value="0.1"/>
-    <xacro:property name="laser_max_range" value="200.0"/>
+    <xacro:property name="laser_max_range" value="100.0"/>
     <xacro:property name="ros_topic" value="/livox/lidar"/>
-    <xacro:property name="samples" value="24000"/>
+    <xacro:property name="samples" value="12000"/>
     <xacro:property name="downsample" value="1"/>
 
     <xacro:macro name="Devices" params="connected_to *origin Livox_switch:=false D435_switch:=false">
@@ -41,7 +41,7 @@
                 <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
                     <box size="0.18 0.24 0.08"/>
-                    <!-- <mesh filename="package://legged_unitree_description/meshes/devices/drives_link.STL" /> -->
+                    <mesh filename="package://legged_unitree_description/meshes/devices/drives_link.STL" />
                 </geometry>
             </collision>
         </link>
@@ -64,7 +64,7 @@
             <collision>
                 <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
-                    <!-- <mesh filename="package://legged_unitree_description/meshes/devices/mid360_link.STL" /> -->
+                    <mesh filename="package://legged_unitree_description/meshes/devices/mid360_link.STL" />
                 </geometry>
             </collision>
         </link>
@@ -75,10 +75,10 @@
             <axis xyz="0 0 0" />
         </joint>
 
-        <xacro:macro name="Livox_Mid_gazebo_sensor" params="visualize:=True update_rate:=10 resolution:=0.002 noise_mean:=0.0 noise_stddev:=0.01 name:=livox">
+        <xacro:macro name="Livox_Mid_gazebo_sensor" params="visualize:=True update_rate:=10 resolution:=0.01 noise_mean:=0.0 noise_stddev:=0.01 name:=mid360">
             <gazebo reference="mid360_link">
                 <sensor type="ray" name="laser_${name}">
-                    <pose>0 0 0 0 0 0</pose>
+                    <pose>0.067374 0 0.14292 0 0 0</pose>
                     <visualize>${visualize}</visualize>
                     <update_rate>${update_rate}</update_rate>
                     <!-- This ray plgin is only for visualization. -->
