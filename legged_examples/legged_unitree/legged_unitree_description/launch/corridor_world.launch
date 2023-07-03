@@ -1,7 +1,7 @@
 <launch>
     <arg name="robot_type" default="$(env ROBOT_TYPE)" doc="Robot type: [a1, aliengo, go1, laikago]"/>
     <arg name="Devices_switch" default="true"/>
-    <arg name="Livox_switch" default="false"/>
+    <arg name="Livox_switch" default="true"/>
     <arg name="D435_switch" default="false"/>
 
     <param name="legged_robot_description" command="$(find xacro)/xacro $(find legged_unitree_description)/urdf/robot.xacro
@@ -15,8 +15,8 @@
 
     <rosparam file="$(find legged_gazebo)/config/default.yaml" command="load"/>
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="world_name" value="$(find legged_gazebo)/worlds/empty_world.world"/>
-        <!-- <arg name="world_name" value="$(find legged_gazebo)/worlds/corridor.world"/> -->
+        <!-- <arg name="world_name" value="$(find legged_gazebo)/worlds/empty_world.world"/> -->
+        <arg name="world_name" value="$(find legged_gazebo)/worlds/corridor.world"/>
         <!-- <arg name="world_name" value="/home/zwt/drivers/menge_gazebo_generator/output/Corridor/Corridor.world"/> -->
         <!-- <arg name="world_name" value="/home/zwt/drivers/menge_gazebo_generator/output/Canteen/Canteen.world"/> -->
         <!-- <arg name="world_name" value="/home/zwt/drivers/menge_gazebo_generator/output/Simple/Simple.world"/> -->

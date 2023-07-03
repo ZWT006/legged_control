@@ -10,7 +10,7 @@ teleop:
         scale: 1.57079605
       - axis: 1
         target: linear.x
-        scale: 0.5
+        scale: 1.0
       - axis: 3
         target: linear.y
         scale: 0.3

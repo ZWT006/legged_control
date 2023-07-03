@@ -90,6 +90,8 @@ class TargetTrajectoriesPublisher final {
     //              dx->pose.orientation.x, dy->pose.orientation.y, dq->pose.orientation.z
     // geometry_msgs::PoseStamped: http://docs.ros.org/en/noetic/api/geometry_msgs/html/msg/PoseStamped.html
     vector_t navSeq = vector_t::Zero(msg->poses.size()*6);
+    // zwt add : tracking time interval can changed by the last orientation.w
+    _tracking_time_interval = msg->poses[0].pose.orientation.w;
     for (int idx=0;idx < msg->poses.size();idx++){
       navSeq[idx*6+0] = msg->poses[idx].pose.position.x;
       navSeq[idx*6+1] = msg->poses[idx].pose.position.y;
@@ -122,7 +124,7 @@ class TargetTrajectoriesPublisher final {
   // zwt add : for nav_seq trajectory tracking
   CmdToTargetTrajectories navSeqToTargetTrajectories_;
   ::ros::Subscriber navseqSub_;
-  double _time_interval=0.1;
+  double _tracking_time_interval=0.1;
 };
 
 }  // namespace legged

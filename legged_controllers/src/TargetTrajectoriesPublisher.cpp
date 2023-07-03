@@ -17,7 +17,7 @@ scalar_t COM_HEIGHT;
 vector_t DEFAULT_JOINT_STATE(12);
 scalar_t TIME_TO_TARGET;
 // zwt add trajectory tracking
-scalar_t _time_interval = 0.1;
+scalar_t _tracking_time_interval;
 }  // namespace
 
 //estimateTimeToTarget 默认是匀速运动
@@ -106,7 +106,7 @@ TargetTrajectories navSeqToTargetTrajectories(const vector_t& navSeq, const Syst
   scalar_array_t timeTrajectory(SeqSize, 1);
   for (int idx = 0; idx < SeqSize; idx++)
   {
-    timeTrajectory.at(idx) =  observation.time + idx * _time_interval;
+    timeTrajectory.at(idx) =  observation.time + idx * _tracking_time_interval;
   }
   // desired state trajectory
   vector_t curVel = observation.state.segment<6>(0);
