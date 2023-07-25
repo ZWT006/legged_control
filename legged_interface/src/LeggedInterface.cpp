@@ -121,6 +121,9 @@ void LeggedInterface::setupOptimalControlProblem(const std::string& taskFile, co
         footName + "_normalVelocity",
         std::unique_ptr<StateInputConstraint>(new NormalVelocityConstraintCppAd(*referenceManagerPtr_, *eeKinematicsPtr, i)));
   }
+  // zwt add oval velocity constraint
+
+  // zwt add all state velocity constraint
 
   // Self-collision avoidance constraint
   problemPtr_->stateSoftConstraintPtr->add("selfCollision",

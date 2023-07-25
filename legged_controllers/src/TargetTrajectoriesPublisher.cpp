@@ -18,6 +18,7 @@ vector_t DEFAULT_JOINT_STATE(12);
 scalar_t TIME_TO_TARGET;
 // zwt add trajectory tracking
 scalar_t _tracking_time_interval;
+int nav_seq_size;
 }  // namespace
 
 //estimateTimeToTarget 默认是匀速运动
@@ -101,16 +102,18 @@ TargetTrajectories cmdVelToTargetTrajectories(const vector_t& cmdVel, const Syst
 // zwt #############################################################################################
 TargetTrajectories navSeqToTargetTrajectories(const vector_t& navSeq, const SystemObservation& observation)
 {
-  int SeqSize = navSeq.size()/6;// 当前点+目标点
+  int SeqSize = navSeq.size()/nav_seq_size;// 当前点+目标点
   // desired time trajectory
   scalar_array_t timeTrajectory(SeqSize, 1);
+  scalar_t target_time = observation.time;
   for (int idx = 0; idx < SeqSize; idx++)
   {
-    timeTrajectory.at(idx) =  observation.time + idx * _tracking_time_interval;
+    target_time += navSeq(idx*nav_seq_size + 6);
+    timeTrajectory.at(idx) =  target_time;
   }
   // desired state trajectory
-  vector_t curVel = observation.state.segment<6>(0);
-  vector_t curPose = observation.state.segment<6>(6);
+  vector_t curVel = observation.state.segment<6>(0); // 从 0 开始取 6 个
+  vector_t curPose = observation.state.segment<6>(6); // 从 6 开始取 6 个
   vector_t midVel = curVel;
   midVel(2) = 0; // z_
   midVel(3) = 0; // L_x
@@ -129,11 +132,13 @@ TargetTrajectories navSeqToTargetTrajectories(const vector_t& navSeq, const Syst
   for (int idx = 1; idx < SeqSize; idx++)
   {
     // vel 还是世界坐标系下的数值
-    midVel(0)=navSeq(idx*6+3);midVel(1)=navSeq(idx*6+4);midVel(5)=navSeq(idx*6+5);
+    midVel(0)=navSeq(idx * nav_seq_size + 3);
+    midVel(1)=navSeq(idx * nav_seq_size + 4);
+    midVel(5)=navSeq(idx * nav_seq_size + 5);
     // pose 是相对于当前位置的数值 + 当前位置
-    midPose(0) = navSeq(idx*6+0) + delta_x;
-    midPose(1) = navSeq(idx*6+1) + delta_y;
-    scalar_t _q_ref = navSeq(idx*6+2) + delta_q;
+    midPose(0) = navSeq(idx * nav_seq_size + 0) + delta_x;
+    midPose(1) = navSeq(idx * nav_seq_size + 1) + delta_y;
+    scalar_t _q_ref = navSeq(idx * nav_seq_size + 2) + delta_q;
     // _q_ref = angles::normalize_angle(_q_ref);
     _q_ref = angles::shortest_angular_distance(_last_q, _q_ref);
     midPose(3) = _last_q + _q_ref;
