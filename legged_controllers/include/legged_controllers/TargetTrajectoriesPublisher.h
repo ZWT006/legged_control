@@ -86,12 +86,15 @@ class TargetTrajectoriesPublisher final {
       if (latestObservation_.time == 0.0) {
         return;
       }
+      if (msg->poses.size() == 0) {
+        return;
+      }
     //使用 geometry_msgs::Pose 来存储[x,y,q]和[dx,dy,dq] 并且[x,y,q]是相对于当前baselink/odometry的偏移量;速度是世界坐标系下的速度
     // 对应的数据格式: x->pose.position.x, y->pose.position.y, q->pose.position.z
     //              dx->pose.orientation.x, dy->pose.orientation.y, dq->pose.orientation.z ,dt->pose.orientation.w
     // geometry_msgs::PoseStamped: http://docs.ros.org/en/noetic/api/geometry_msgs/html/msg/PoseStamped.html
     vector_t navSeq = vector_t::Zero(msg->poses.size() * nav_seq_size);
-    for (int idx=0;idx < msg->poses.size();idx++){
+    for (int idx = 0; idx < msg->poses.size(); idx++){
       navSeq[idx*nav_seq_size+0] = msg->poses[idx].pose.position.x;
       navSeq[idx*nav_seq_size+1] = msg->poses[idx].pose.position.y;
       navSeq[idx*nav_seq_size+2] = msg->poses[idx].pose.position.z;
@@ -124,7 +127,7 @@ class TargetTrajectoriesPublisher final {
   // zwt add : for nav_seq trajectory tracking
   CmdToTargetTrajectories navSeqToTargetTrajectories_;
   ::ros::Subscriber navseqSub_;
-  double _tracking_time_interval=0.1;
+  double _tracking_time_interval = 0.1;
   int nav_seq_size = NAV_SEQ_SIZE;
 };
 

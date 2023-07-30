@@ -8,6 +8,8 @@ sudo apt-get install ros-noetic-joy-teleop
 # 修改后编译
 catkin build legged_controllers legged_unitree_description
 
+# source 环境变量
+source ~/motion_ws/devel/setup.bash
 
 # legged control 工作流程
 1. 启动robot

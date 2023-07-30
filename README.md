@@ -15,7 +15,6 @@ The advantage shows below:
 I believe this framework can provide a high-performance and easy-to-use model-based baseline for the legged robot
 community.
 
-https://user-images.githubusercontent.com/21256355/192135828-8fa7d9bb-9b4d-41f9-907a-68d34e6809d8.mp4
 
 ## Installation
 
@@ -24,8 +23,8 @@ https://user-images.githubusercontent.com/21256355/192135828-8fa7d9bb-9b4d-41f9-
 The source code is hosted on GitHub: [qiayuanliao/legged_control](https://github.com/qiayuanliao/legged_control).
 
 ```
-# Clone legged_control
-git clone https://github.com/qiayuanliao/legged_control.git
+# Clone legged_control midify
+git clone https://gitee.com/coralab/legged-controller.git
 ```
 
 ### OCS2
@@ -49,6 +48,8 @@ its dependencies following the step below.
 2. Compile the `ocs2_legged_robot_ros` package with [catkin tools](https://catkin-tools.readthedocs.io/en/latest/)
    instead of `catkin_make`. It will take you about ten minutes.
    ```
+   # if in Ubuntu20.04 there are error about `Unable to find either executable ‘empy‘ or Python module ‘em‘... try`
+   # add : -DPYTHON_EXECUTABLE=/usr/bin/python3
    catkin config -DCMAKE_BUILD_TYPE=RelWithDebInfo
    catkin build ocs2_legged_robot_ros ocs2_self_collision_visualization
    ```
@@ -64,6 +65,12 @@ its dependencies following the step below.
   git clone https://github.com/Livox-SDK/livox_laser_simulation
   ```
 ### Build
+Build the hardware interface real robot. If you use your computer only for simulation, you **DO NOT** need to
+compile `legged_unitree_hw` (TODO: add a legged prefix to the package name)
+
+```
+catkin build legged_unitree_hw
+```
 
 Build the source code of `legged_control` by:
 
@@ -75,13 +82,6 @@ Build the simulation (**DO NOT** run on the onboard computer)
 
 ```
 catkin build legged_gazebo
-```
-
-Build the hardware interface real robot. If you use your computer only for simulation, you **DO NOT** need to
-compile `legged_unitree_hw` (TODO: add a legged prefix to the package name)
-
-```
-catkin build legged_unitree_hw
 ```
 
 ## Quick Start
@@ -128,11 +128,29 @@ sudo apt install ros-noetic-rqt-controller-manager
 rosrun rqt_controller_manager rqt_controller_manager
 ```
 
+Or, you can use `joy_teleop.launch` but should install dependances
+```
+	sudo apt-get install ros-noetic-joy
+	sudo apt-get install ros-noetic-joystick-drivers
+  sudo apt-get install ros-noetic-joy-teleop
+  sudo apt-get install ros-noetic-twist-joy
+```
+
 5. Set the gait in the terminal of `load_controller.launch`, then use RViz (you need to add what you want to display by
    yourself) and control the robot by `cmd_vel` and `move_base_simple/goal`:
 
 ![ezgif-5-684a1e1e23.gif](https://s2.loli.net/2022/07/27/lBzdeRa1gmvwx9C.gif)
 
+6. Using nav_seq for trajectory tracking control, the control msg is `nav_msgs::Path`, name is `/nav_seq`
+```
+x->pose.position.x  // position x
+y->pose.position.y  // position y
+q->pose.position.z  // position yaw angle
+dx->pose.orientation.x  // velocity x
+dy->pose.orientation.y  // velocity y
+dq->pose.orientation.z  // velocity yaw
+dt->pose.orientation.w  // discrete time
+```
 ### Note
 
 - **THE GAIT AND THE GOAL ARE COMPLETELY DIFFERENT AND SEPARATED!**  You don't need to type stance while the robot is

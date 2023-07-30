@@ -16,9 +16,9 @@ scalar_t TARGET_ROTATION_VELOCITY;
 scalar_t COM_HEIGHT;
 vector_t DEFAULT_JOINT_STATE(12);
 scalar_t TIME_TO_TARGET;
-// zwt add trajectory tracking
-scalar_t _tracking_time_interval;
-int nav_seq_size;
+// zwt add trajectory tracking 
+scalar_t _tracking_time_interval = 0.1;
+int nav_seq_size = 7; // x,y,q,vx,vy,vq,dt defalut is 0, should be initialized in main function
 }  // namespace
 
 //estimateTimeToTarget 默认是匀速运动
