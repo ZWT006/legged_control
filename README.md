@@ -84,6 +84,12 @@ Build the simulation (**DO NOT** run on the onboard computer)
 catkin build legged_gazebo
 ```
 
+Build the device simulation
+
+```
+catkin build realsense_ros_gazebo livox_laser_simulation
+```
+
 ## Quick Start
 
 1. Set your robot type as an environment variable: ROBOT_TYPE
