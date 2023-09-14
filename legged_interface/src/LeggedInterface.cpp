@@ -14,6 +14,7 @@
 #include "legged_interface/constraint/NormalVelocityConstraintCppAd.h"
 #include "legged_interface/constraint/ZeroForceConstraint.h"
 #include "legged_interface/constraint/ZeroVelocityConstraintCppAd.h"
+#include "legged_interface/constraint/NormalizedMomentConstraint.h"
 #include "legged_interface/cost/LeggedRobotQuadraticTrackingCost.h"
 #include "legged_interface/initialization/LeggedRobotInitializer.h"
 
@@ -97,6 +98,7 @@ void LeggedInterface::setupOptimalControlProblem(const std::string& taskFile, co
 
   // Cost terms
   problemPtr_->costPtr->add("baseTrackingCost", getBaseTrackingCost(taskFile, centroidalModelInfo_, verbose));
+  probledPtr_->stateSoftConstraintPtr->add("normalizedMomentConstraint",getNormalizedMomentConstraint(taskFile));
 
   // Constraint terms
   // friction cone settings
@@ -373,5 +375,21 @@ std::unique_ptr<StateCost> LeggedInterface::getSelfCollisionConstraint(const Pin
 
   return std::make_unique<StateSoftConstraint>(std::move(constraint), std::move(penalty));
 }
+std::unique_ptr<StateCost> LeggedInterface::getNormalizedMomentConstraint(const std::string& taskFile)
+{
+  scalar_t lambda_l = 1.0;
+  scalar_t lambda_r = 1.0;
+  scalar_t h_max = 0.0;
+  loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.lambda_l", lambda_l);
+  loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.lambda_r", lambda_r);
+  loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.h_max", h_max);
 
+  scalar_t mu = 1e-2;
+  scalar_t delta = 1e-3;
+  loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.mu", mu);
+  loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.delta", delta);
+  auto penalty = std::make_unique<RelaxedBarrierPenalty>(RelaxedBarrierPenalty::Config{mu, delta});
+  auto constraint = std::make_unique<NormalizedMomentConstraint>(lambda_l, lambda_r, h_max);
+  return std::make_unique<StateSoftConstraint>(std::move(constraint), std::move(penalty));
+}
 }  // namespace legged

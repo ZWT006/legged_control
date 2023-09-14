@@ -280,6 +280,17 @@ selfCollision
   delta   1e-3
 }
 
+normalizedMomentConstraint
+{
+  lambda_l      1.0
+  lambda_r      1.0
+  h_max         1.0
+
+  ; relaxed log barrier parameters
+  mu            0.01
+  delta         0.001
+}
+
 ; Whole body control
 torqueLimitsTask
 {

@@ -78,6 +78,7 @@ class LeggedInterface : public RobotInterface {
                                                                   size_t contactPointIndex);
   std::unique_ptr<StateCost> getSelfCollisionConstraint(const PinocchioInterface& pinocchioInterface, const std::string& taskFile,
                                                         const std::string& prefix, bool verbose);
+  std::unique_ptr<StateCost> getNormalizedMomentConstraint(const std::string& taskFile);
 
   ModelSettings modelSettings_;
   mpc::Settings mpcSettings_;
