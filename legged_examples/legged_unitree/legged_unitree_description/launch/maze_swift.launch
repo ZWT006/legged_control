@@ -1,0 +1,41 @@
+<launch>
+    <arg name="robot_type" default="$(env ROBOT_TYPE)" doc="Robot type: [a1, aliengo, go1, laikago]"/>
+    <arg name="Devices_switch" default="true"/>
+    <arg name="Livox_switch" default="false"/>
+    <arg name="D435_switch" default="false"/>
+    <arg name="Laser_switch" default="false"/>
+
+    <param name="legged_robot_description" command="$(find xacro)/xacro $(find legged_unitree_description)/urdf/robot.xacro
+       robot_type:=$(arg robot_type)
+       Devices_switch:=$(arg Devices_switch)
+       Livox_switch:=$(arg Livox_switch)
+       D435_switch:=$(arg D435_switch)
+        Laser_switch:=$(arg Laser_switch)
+       "/>
+    <node name="generate_urdf" pkg="legged_common" type="generate_urdf.sh" output="screen"
+          args="$(find legged_unitree_description)/urdf/robot.xacro $(arg robot_type)"/>
+
+    <rosparam file="$(find legged_gazebo)/config/default.yaml" command="load"/>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <!-- <arg name="world_name" value="$(find legged_gazebo)/worlds/empty_world.world"/> -->
+        <arg name="world_name" value="$(find legged_gazebo)/worlds/maze.world"/>
+        <!-- <arg name="world_name" value="/home/zwt/drivers/menge_gazebo_generator/output/Corridor/Corridor.world"/> -->
+        <!-- <arg name="world_name" value="/home/zwt/drivers/menge_gazebo_generator/output/Canteen/Canteen.world"/> -->
+        <!-- <arg name="world_name" value="/home/zwt/drivers/menge_gazebo_generator/output/Simple/Simple.world"/> -->
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>       
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+    <!-- push robot_description to factory and spawn robot in gazebo -->
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" clear_params="true"
+          args="-z 0.45 -y 2.5 -param legged_robot_description -urdf -model $(arg robot_type)" output="screen"/>
+
+    <group if="$(arg Livox_switch)"> <!-- pareframe:odom childframe:a1::base -->>
+        <!-- <node pkg="tf" type="static_transform_publisher" name="tf_livox_to_odom" 
+        args="0 0 0 0 0 0 1 odom a1::base 100 "/> -->
+        <node pkg="tf" type="static_transform_publisher" name="tf_livox_to_link" 
+        args="0 0 0 0 0 0 1 mid360_link laser_livox 100 "/>
+    </group>
+</launch>

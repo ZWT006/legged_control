@@ -6,8 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /TF1
-        - /PointCloud1/Status1
       Splitter Ratio: 0.5
     Tree Height: 746
   - Class: rviz/Selection
@@ -27,7 +25,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: LaserScan
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -148,17 +146,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        cam_bracker_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        drives_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        mid360_link:
+        hokuyo_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -213,32 +201,21 @@ Visualization Manager:
           Value: true
         RH_thigh:
           Value: true
-        a1::base:
-          Value: true
         base:
           Value: true
-        cam_bracker_link:
-          Value: true
-        drives_link:
-          Value: true
-        laser_livox:
-          Value: true
-        mid360_link:
+        hokuyo_frame:
           Value: true
         odom:
           Value: true
         unitree_imu:
           Value: true
       Marker Alpha: 0.800000011920929
-      Marker Scale: 0.25
+      Marker Scale: 0.30000001192092896
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        a1::base:
-          laser_livox:
-            {}
         odom:
           base:
             LF_hip:
@@ -261,11 +238,8 @@ Visualization Manager:
                 RH_calf:
                   RH_FOOT:
                     {}
-            drives_link:
-              cam_bracker_link:
-                {}
-              mid360_link:
-                {}
+            hokuyo_frame:
+              {}
             unitree_imu:
               {}
       Update Interval: 0
@@ -282,7 +256,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: ""
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -297,10 +271,38 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
+      Value: false
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 0.5599355697631836
+        Min Value: -0.001155782607384026
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.20000000298023224
+      Style: Flat Squares
+      Topic: /scan
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
   Enabled: true
   Global Options:
-    Background Color: 48; 48; 48
+    Background Color: 186; 189; 182
     Default Light: true
     Fixed Frame: odom
     Frame Rate: 30
@@ -326,7 +328,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.469738483428955
+      Distance: 7.079346179962158
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -334,17 +336,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: -0.07501836121082306
+        Y: 0.06768222898244858
+        Z: 0.0919426679611206
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8203979730606079
+      Pitch: 0.6053981781005859
       Target Frame: <Fixed Frame>
-      Yaw: 5.768590450286865
+      Yaw: 4.633567810058594
     Saved: ~
 Window Geometry:
   Displays:

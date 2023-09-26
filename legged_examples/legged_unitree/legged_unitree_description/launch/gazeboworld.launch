@@ -1,0 +1,16 @@
+<launch>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <!-- <arg name="world_name" value="$(find legged_gazebo)/worlds/empty_world.world"/> -->
+        <arg name="world_name" value="$(find legged_gazebo)/worlds/maze.world"/>
+        <!-- <arg name="world_name" value="/home/zwt/drivers/menge_gazebo_generator/output/Corridor/Corridor.world"/> -->
+        <!-- <arg name="world_name" value="/home/zwt/drivers/menge_gazebo_generator/output/Canteen/Canteen.world"/> -->
+        <!-- <arg name="world_name" value="/home/zwt/drivers/menge_gazebo_generator/output/Simple/Simple.world"/> -->
+        <!-- <arg name="paused" value="true"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>       
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/> -->
+    </include>
+
+</launch>

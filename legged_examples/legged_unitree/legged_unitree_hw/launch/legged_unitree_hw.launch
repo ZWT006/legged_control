@@ -1,8 +1,14 @@
 <launch>
     <arg name="robot_type" default="$(env ROBOT_TYPE)" doc="Robot type: [a1, aliengo, go1, laikago]"/>
+    <arg name="Devices_switch" default="false"/>
+    <arg name="Livox_switch" default="false"/>
+    <arg name="D435_switch" default="false"/>
 
     <param name="legged_robot_description" command="$(find xacro)/xacro $(find legged_unitree_description)/urdf/robot.xacro
        robot_type:=$(arg robot_type)
+       Devices_switch:=$(arg Devices_switch)
+       Livox_switch:=$(arg Livox_switch)
+       D435_switch:=$(arg D435_switch)
     "/>
     <node name="generate_urdf" pkg="legged_common" type="generate_urdf.sh" output="screen"
           args="$(find legged_unitree_description)/urdf/robot.xacro $(arg robot_type)"/>

@@ -1,0 +1,4 @@
+<launch>
+    <node name="robot_rviz" pkg="rviz" type="rviz" args="-d $(find legged_unitree_description)/visulization.rviz"/>
+
+</launch>
