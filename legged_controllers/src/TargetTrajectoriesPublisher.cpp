@@ -115,6 +115,9 @@ TargetTrajectories navSeqToTargetTrajectories(const vector_t& navSeq, const Syst
   vector_t curVel = observation.state.segment<6>(0); // 从 0 开始取 6 个
   vector_t curPose = observation.state.segment<6>(6); // 从 6 开始取 6 个
   vector_t midVel = curVel;
+  // std::cout << "curVel: " << curVel.transpose() << std::endl;
+  std::cout << std::setprecision(4) << "COM velocity: curVel.x " << curVel(0) << ";curVel.y " 
+            << curVel(1) << ";curVel.q " << curVel(5) << std::endl;
   midVel(2) = 0; // z_
   midVel(3) = 0; // L_x
   midVel(4) = 0; // L_y
@@ -145,7 +148,8 @@ TargetTrajectories navSeqToTargetTrajectories(const vector_t& navSeq, const Syst
     _last_q = midPose(3); // update last q
     stateTrajectory[idx] << midVel, midPose, DEFAULT_JOINT_STATE;
   }
-
+  std::cout << std::setprecision(4) << "COM velocity: midVel.x " << midVel(0) << ";midVel.y " 
+            << midVel(1) << ";midVel.q " << midVel(5) << std::endl;
   // desired input trajectory (just right dimensions, they are not used)
   const vector_array_t inputTrajectory(SeqSize, vector_t::Zero(observation.input.size()));
 

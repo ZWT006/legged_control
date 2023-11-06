@@ -284,7 +284,7 @@ normalizedMomentConstraint
 {
   lambda_l      1.0
   lambda_r      1.0
-  h_max         1.0
+  h_max         100.0
 
   ; relaxed log barrier parameters
   mu            0.01

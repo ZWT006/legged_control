@@ -98,7 +98,7 @@ void LeggedInterface::setupOptimalControlProblem(const std::string& taskFile, co
 
   // Cost terms
   problemPtr_->costPtr->add("baseTrackingCost", getBaseTrackingCost(taskFile, centroidalModelInfo_, verbose));
-  probledPtr_->stateSoftConstraintPtr->add("normalizedMomentConstraint",getNormalizedMomentConstraint(taskFile));
+  problemPtr_->stateSoftConstraintPtr->add("normalizedMomentConstraint",getNormalizedMomentConstraint(taskFile));
 
   // Constraint terms
   // friction cone settings
@@ -375,6 +375,7 @@ std::unique_ptr<StateCost> LeggedInterface::getSelfCollisionConstraint(const Pin
 
   return std::make_unique<StateSoftConstraint>(std::move(constraint), std::move(penalty));
 }
+//NOTE: std::unique_ptr<StateCost> 创建了一个指向StateCost的智能指针
 std::unique_ptr<StateCost> LeggedInterface::getNormalizedMomentConstraint(const std::string& taskFile)
 {
   scalar_t lambda_l = 1.0;
@@ -383,11 +384,19 @@ std::unique_ptr<StateCost> LeggedInterface::getNormalizedMomentConstraint(const 
   loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.lambda_l", lambda_l);
   loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.lambda_r", lambda_r);
   loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.h_max", h_max);
+  /* debug info */
+  // std::cout << "lambda_l: " << lambda_l << std::endl;
+  // std::cout << "lambda_r: " << lambda_r << std::endl;
+  // std::cout << "h_max: " << h_max << std::endl;
 
   scalar_t mu = 1e-2;
   scalar_t delta = 1e-3;
   loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.mu", mu);
   loadData::loadCppDataType(taskFile, "normalizedMomentConstraint.delta", delta);
+  /* debug info */
+  // std::cout << "mu: " << mu << std::endl;
+  // std::cout << "delta: " << delta << std::endl;
+  //NOTE: std::make_unique 是创建智能指针的方法;std::move 转移所有权
   auto penalty = std::make_unique<RelaxedBarrierPenalty>(RelaxedBarrierPenalty::Config{mu, delta});
   auto constraint = std::make_unique<NormalizedMomentConstraint>(lambda_l, lambda_r, h_max);
   return std::make_unique<StateSoftConstraint>(std::move(constraint), std::move(penalty));
