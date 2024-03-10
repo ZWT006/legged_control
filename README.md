@@ -24,7 +24,7 @@ The source code is hosted on GitHub: [qiayuanliao/legged_control](https://github
 
 ```
 # Clone legged_control midify
-git clone https://gitee.com/coralab/legged-controller.git
+git clone https://github.com/ZWT006/legged_control.git
 ```
 
 ### OCS2
